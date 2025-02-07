@@ -10,6 +10,9 @@ def g3(x: float) -> float:
 def g4(x: float) -> float:
     return -(1/3)*(x**2 - x - 2) + x
 
+def g5(x: float) -> float:
+    return (-2/5)*(x**2 - 2*x) + x
+
 def find_fixedpoint(func, start, max_iter=10000, epsilon=1e-20):
     prev_x = start
     x_nx = None
@@ -29,7 +32,8 @@ def find_fixedpoint(func, start, max_iter=10000, epsilon=1e-20):
     print(f"Root is {x_nx}\n")
 
 if __name__ == "__main__":
-    find_fixedpoint(g1, 1)
-    find_fixedpoint(g2, 1)
-    find_fixedpoint(g3, 1)
-    find_fixedpoint(g4, 1)
+    # find_fixedpoint(g1, 1)
+    # find_fixedpoint(g2, 1)
+    # find_fixedpoint(g3, 1)
+    # find_fixedpoint(g4, 1)
+    find_fixedpoint(g5,3, epsilon=0.05)
