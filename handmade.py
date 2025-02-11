@@ -34,7 +34,7 @@ def generate_matrix(size: int) -> Tuple[List[List[int]], List[int]]:
 
         solution.append(res)
 
-    return A, solution
+    return A, x, solution
 
 
 def solve(A: List[List[int]], b: List[int]) -> List[int]:
@@ -57,14 +57,67 @@ def solve(A: List[List[int]], b: List[int]) -> List[int]:
                 matrix[row][j] = matrix[row][j] / tmp
             
             for j in range(row+1, len(matrix)):
-                matrix[j][col] = matrix[j][col] + (matrix[row][col] * matrix[j][col] * -1)
+                k = (matrix[row][col] * matrix[j][col] * -1)
+                for sub_col in range(col, len(matrix[0])):
+                    matrix[j][sub_col] += k * (matrix[row][sub_col])
         
         col += 1
         row += 1
-        
-    print(f"Matrix is")
+
+    print("After do forward step") 
     printM(matrix)
+    col -= 1
+    row -= 1
+    while col >= 0 and row >= 0:
+        for j in range(row-1, -1, -1):
+            k = (matrix[row][col] * matrix[j][col] * -1)
+            for sub_col in range(col, len(matrix[0])):
+                matrix[j][sub_col] += k * (matrix[row][sub_col])
+        col -= 1
+        row -= 1
+     
+    print(f"After do backward step")
+    printM(matrix)
+    
+    many_sol = True
+    for r in range(len(matrix)):
+        for c in range(len(matrix[0]) - 1):
+            if matrix[r][c] != 0:
+                many_sol = False
+                break
+                
+        if many_sol:
+            print("There's exist zeros row, therefore there's many solution")
+            return None
+
+    answer = []
+    for row in range(len(matrix)):
+       answer.append(matrix[row][-1]) 
+    return answer
+
+def check_error(matrix: List[int], solution: List[int]) -> List[int]:
+    error = []
+    for i in range(len(matrix)):
+        error.append(abs(matrix[i] - solution[i]))
+    
+    return error
+
+def cal_MSE(error: List[int]) -> float:
+    N = len(error)
+    result = sum([i**2 for i in error]) / N
+    return result
 
 if __name__ == "__main__":
-    A, b = generate_matrix(3)
-    solve(A, b)
+    A, real_answer, b = generate_matrix(5)
+    answer = solve(A, b)
+    
+    if not answer:
+        exit(0) 
+    
+    error = check_error(real_answer, answer)
+    error_mean_square = cal_MSE(error)
+    
+    print(f"real answer is {real_answer}")
+    print(f"We got {answer}")
+    print(f"This is error matrix {error}")
+    print(f"MSE is equal to {error_mean_square}")
