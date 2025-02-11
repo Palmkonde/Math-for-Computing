@@ -10,6 +10,18 @@ def printM(matrix):
             print(matrix[i][j], end=" ")
         print()
 
+def create_hilbert(size: int) -> List[List[int]]:
+    matrix = []
+    for i in range(size):
+        tmp = []
+        for j in range(size):
+            res = 1/(i+j+1)
+            tmp.append(res)
+        matrix.append(tmp)
+            
+    return matrix
+
+
 def generate_matrix(size: int) -> Tuple[List[List[int]], List[int]]:
     A = []
     random_number = None
@@ -35,6 +47,21 @@ def generate_matrix(size: int) -> Tuple[List[List[int]], List[int]]:
         solution.append(res)
 
     return A, x, solution
+
+def generate_hilbert(size: int, x: List[int]) -> Tuple[List[List[int]], List[int]]:
+    A = create_hilbert(size=size)
+
+    # Ax = b
+    solution = []
+    for i in range(size):
+        res = 0
+        for j in range(size):
+            res += A[i][j] * x[j]
+
+        solution.append(res)
+
+    return A, solution
+
 
 
 def solve(A: List[List[int]], b: List[int]) -> List[int]:
@@ -64,8 +91,8 @@ def solve(A: List[List[int]], b: List[int]) -> List[int]:
         col += 1
         row += 1
 
-    print("After do forward step") 
-    printM(matrix)
+    # print("After do forward step") 
+    # printM(matrix)
     col -= 1
     row -= 1
     while col >= 0 and row >= 0:
@@ -76,8 +103,8 @@ def solve(A: List[List[int]], b: List[int]) -> List[int]:
         col -= 1
         row -= 1
      
-    print(f"After do backward step")
-    printM(matrix)
+    # print(f"After do backward step")
+    # printM(matrix)
     
     many_sol = True
     for r in range(len(matrix)):
@@ -108,16 +135,29 @@ def cal_MSE(error: List[int]) -> float:
     return result
 
 if __name__ == "__main__":
-    A, real_answer, b = generate_matrix(5)
+    sample_size = 20
+    A, real_answer, b = generate_matrix(sample_size)
+    hilbert_matrix, hilbert_b, = generate_hilbert(sample_size, real_answer)
     answer = solve(A, b)
+    answer_hil = solve(hilbert_matrix, hilbert_b)
     
     if not answer:
         exit(0) 
-    
+        
+    print(f"Real Answer is {real_answer}")
+    print("*******************************Normal Matrix*************************************************************") 
     error = check_error(real_answer, answer)
     error_mean_square = cal_MSE(error)
-    
-    print(f"real answer is {real_answer}")
+
     print(f"We got {answer}")
+    print(f"This is error matrix {error}")
+    print(f"MSE is equal to {error_mean_square}")
+    print("********************************************************************************************************")
+          
+    print("\n**************************** Hilbert Matrix ***********************************************************")
+    error = check_error(real_answer, answer_hil)
+    error_mean_square = cal_MSE(error)
+
+    print(f"We got {answer_hil}")
     print(f"This is error matrix {error}")
     print(f"MSE is equal to {error_mean_square}")
