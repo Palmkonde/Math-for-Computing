@@ -1,4 +1,5 @@
 import random
+import copy
 
 from typing import List, Tuple
 
@@ -65,7 +66,7 @@ def generate_hilbert(size: int, x: List[int]) -> Tuple[List[List[int]], List[int
 
 
 def solve(A: List[List[int]], b: List[int]) -> List[int]:
-    matrix = A
+    matrix = copy.deepcopy(A)
 
     # Reform
     for row in range(len(matrix)):
@@ -134,6 +135,15 @@ def cal_MSE(error: List[int]) -> float:
     result = sum([i**2 for i in error]) / N
     return result
 
+def matrix_mul(A: List[List[int|float]], B:List[List[int | float]]) -> List[int | float]:
+    result = []
+    for i in range(len(A)):
+        res = 0
+        for j in range(len(B)):
+            res += A[i][j] * B[j]
+        result.append(res) 
+    return result 
+
 if __name__ == "__main__":
     sample_size = 20
     A, real_answer, b = generate_matrix(sample_size)
@@ -146,7 +156,8 @@ if __name__ == "__main__":
         
     print(f"Real Answer is {real_answer}")
     print("*******************************Normal Matrix*************************************************************") 
-    error = check_error(real_answer, answer)
+    Ax = matrix_mul(A, answer)
+    error = check_error(Ax, b)
     error_mean_square = cal_MSE(error)
 
     print(f"We got {answer}")
@@ -155,7 +166,8 @@ if __name__ == "__main__":
     print("********************************************************************************************************")
           
     print("\n**************************** Hilbert Matrix ***********************************************************")
-    error = check_error(real_answer, answer_hil)
+    Ax = matrix_mul(hilbert_matrix, answer_hil)
+    error = check_error(Ax, hilbert_b)
     error_mean_square = cal_MSE(error)
 
     print(f"We got {answer_hil}")
