@@ -60,8 +60,12 @@ for i, contour in enumerate(contours):
     degree = min(desired_degree, n_points - 1)
 
     # Fit polynomials for x(t) and y(t)
-    coeffs_x = np.polyfit(t, x_vals, deg=degree)
-    coeffs_y = np.polyfit(t, y_vals, deg=degree)
+    # coeffs_x = np.polyfit(t, x_vals, deg=degree)
+    # coeffs_y = np.polyfit(t, y_vals, deg=degree)
+    
+    # Import CSV
+    coeffs_x = np.genfromtxt(fname="./CSV/vday_plot_8_x_coeffs.csv", delimiter=',')
+    coeffs_y = np.genfromtxt(fname="./CSV/vday_plot_8_y_coeffs.csv", delimiter=',')
 
     # Evaluate the polynomials on a finer grid for smooth plotting.
     t_new = np.linspace(0, n_points - 1, 300)
