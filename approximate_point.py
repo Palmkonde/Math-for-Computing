@@ -12,9 +12,12 @@ def generate_points(num_points):
     return (x_answer, y_answer), xy_points
 
 if __name__ == "__main__":
-    xy_answer, xy_points = generate_points(6)
-
-    d = np.array([np.linalg.norm(xy - xy_answer) - np.random.uniform(-0.5, 0.5) for xy in xy_points])
+    # xy_answer, xy_points = generate_points(6)
+    # d = np.array([np.linalg.norm(xy - xy_answer) - np.random.uniform(-0.5, 0.5) for xy in xy_points])
+    
+    data = np.genfromtxt("./CSV/multilateration-data.csv", delimiter=',')
+    xy_points = data[:, 0:2]
+    d = data[:, 2]
 
     x_0, y_0 = xy_points[0]
     A = np.zeros((len(d) - 1, 2))
@@ -36,7 +39,7 @@ if __name__ == "__main__":
     print(c)
         
     plt.plot(xy_points[:, 0], xy_points[:, 1], 'o', label="Data points")
-    plt.plot(xy_answer[0], xy_answer[1], 'x', label="Exact Answer")
+    # plt.plot(xy_answer[0], xy_answer[1], 'x', label="Exact Answer")
     plt.plot(c[0], c[1], '^', label="Approximate")
     plt.legend()
     plt.show()
